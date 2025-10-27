@@ -8,6 +8,8 @@ output:
 
 # This is Jeff's awesome website
 
+The website is an example from [P8105](https://p8105.com/index.html). Learn more about me [here](about.html).
+
 What if I add some text here
 
 ![](https://media.giphy.com/media/drXGoW1iudhKw/giphy.gif)
@@ -30,8 +32,10 @@ Link to useful tools for DS:
 
 ## Local image
 
-![](images/dexter.jpg)
+ ![](images/dexter.jpg)
 
 ## Link to page within the site
 
 [About me](about.html)
+
+Check this [plot page](plots.html)

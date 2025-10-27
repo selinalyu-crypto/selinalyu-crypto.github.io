@@ -3,47 +3,58 @@ title: "About me"
 output: html_document
 ---
 
-```{r}
-library(tidyverse)
-library(plotly)
+### Education
 
-library(p8105.datasets)
-```
+**Columbia University, Mailman School of Public Health** — *MPH, Epidemiology*  
+*Expected May 2026*  
 
-Load the airbnb dataset.
+- Certificate: Applied Biostatistics & Health Data Science  
+- Thesis (in progress): How circadian misalignment affects CRAR & cortisol
 
-```{r}
-data("nyc_airbnb")
+**University of Wisconsin–Madison** — *B.S., Biology & Psychology*  
+*Dec 2021*  
 
-nyc_airbnb = 
-  nyc_airbnb |> 
-  mutate(rating = review_scores_location / 2) |>
-  select(
-    neighbourhood_group, neighbourhood, rating, price, room_type, lat, long) |>
-  filter(
-    !is.na(rating), 
-    neighbourhood_group == "Manhattan",
-    room_type == "Entire home/apt",
-    price %in% 100:500)
-```
+### Research Experience
 
+**St-Onge Lab, Department of Medicine, Columbia University Irving Medical Center** -- *Student Intern*
 
-Let's make scatterplot!
+- Coordinated inpatient metabolic chamber stays and outpatient visits.
+- Developed a comprehensive Circadian Rest-Activity Rhythm (CRAR) dataset for analysis, involving over 20 participants.
 
-```{r}
-nyc_airbnb |>
-  mutate(text_label = str_c("Price: $", price, "\nRating: ", rating)) |> 
-  plot_ly(
-    x = ~lat, y = ~long, 
-    type = "scatter", mode = "markers",
-    color = ~price, text = ~text_label, alpha = 0.5)
-```
+**Peter’s Lab, Department of Pathology and Laboratory Medicine, UW-Madison** -- *Research Intern*
 
+- Investigated cell-matrix interactions to understand glaucoma pathophysiology.
+- Performed anterior-chamber adenoviral injections in mice; measured IOP and fibronectin expression.
+- Analyzed IOP with paired t-tests (OD vs OS).
 
+**Xi’s Lab, National Institute of Biological Sciences, Beijing**
+*Summer Intern*
 
+- Conducted research on stem cell differentiation in fruit flies and mice, utilizing PCR, genotyping, and dissection techniques.
 
+### Clinical & Healthcare Experience
 
+**New York-Presbyterian Hospital Emergency Department** -- *Volunteer*
 
+- Support patient care, serve meals per diet order, covering 4 areas and 30+ rooms per shift.
+- Communicate with patients, nurses, and physicians to reduce delays.
+
+**University of Wisconsin Hospitals and Clinics Authority** -- *Medical Lab Technician*
+
+- Performed moderately complex diagnostic tests and select high complexity testing.
+- Communicated critical values, coordinated add-on and redraw with providers and outside clinics.
+
+**University of Wisconsin Hospitals and Clinics Authority** -- *Nursing Assistant*
+
+- Assisted in patient care, including sample collection, vital signs monitoring, and patient mobility.
+- Ensured accurate patient data reporting and collaborated closely with healthcare teams.
+- Covered 6 to12 bed units per shift; standardized vitals/specimen workflow
+
+### Leadership & Teaching Experience
+
+**University of Wisconsin-Madison** -- *Academic Peer Tutor*
+
+- Tutored 20 students in Organic Chemistry, developing customized study plans and facilitating group learning.
 
 
 

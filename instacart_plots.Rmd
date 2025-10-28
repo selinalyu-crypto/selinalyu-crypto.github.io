@@ -25,6 +25,42 @@ Column {data-width=650}
 ### Chart A
 
 ```{r}
+instacart |>
+  group_by(product_name, department) %>%
+  summarize(
+    n_orders = n(), reorder_rate = mean(reordered), 
+    add_order_median = median(add_to_cart_order), .groups = "drop") |>
+  filter(n_orders >= 200) |>
+  plot_ly(x = ~n_orders, y = ~reorder_rate, color = ~department, 
+          size = ~n_orders, sizes = c(6, 24), type = "scatter", mode = "markers",
+          hovertemplate = "<b>%{text}</b><br>Dept: %{marker.color}<br>Orders: %{x:,}<br>Reorder rate: %{y:.2f}<br>Median add pos: %{customdata}<extra></extra>",
+          text = ~product_name, customdata = ~add_order_median) |>
+  layout(
+    title = "Product popularity vs. reorder tendency",
+    xaxis = list(title = "Orders per product (filtered ≥200)",
+                 type = "log", tickformat = ",d"),
+    yaxis = list(title = "Reorder rate (0–1)", range = c(0,1)),
+    legend = list(title = list(text = "Department")))
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+instacart |> 
+  group_by(product_name, department) |>
+  summarize(reorder_rate = mean(reordered), .groups="drop") |>
+  filter(!is.na(department)) |>
+  mutate(department = fct_reorder(department, reorder_rate, median)) |>
+  plot_ly(x= ~department, y= ~reorder_rate, type="box") |>
+  layout(yaxis=list(title="Product-level reorder rate"))
+```
+
+### Chart C
+
+```{r}
 top3 =
   instacart |>
   count(department, name = "dept_n") |>
@@ -46,39 +82,4 @@ xaxis = list(title = "Number of items", tickformat = ",d"),
 yaxis = list(title = ""))
 ```
 
-Column {data-width=350}
------------------------------------------------------------------------
-
-### Chart B
-
-```{r}
-instacart |> 
-  group_by(product_name, department) |>
-  summarize(reorder_rate = mean(reordered), .groups="drop") |>
-  filter(!is.na(department)) |>
-  mutate(department = fct_reorder(department, reorder_rate, median)) |>
-  plot_ly(x= ~department, y= ~reorder_rate, type="box") |>
-  layout(yaxis=list(title="Product-level reorder rate"))
-```
-
-### Chart C
-
-```{r}
-instacart |>
-  group_by(product_name, department) %>%
-  summarize(
-    n_orders = n(), reorder_rate = mean(reordered), 
-    add_order_median = median(add_to_cart_order), .groups = "drop") |>
-  filter(n_orders >= 200) |>
-  plot_ly(x = ~n_orders, y = ~reorder_rate, color = ~department, 
-          size = ~n_orders, sizes = c(6, 24), type = "scatter", mode = "markers",
-          hovertemplate = "<b>%{text}</b><br>Dept: %{marker.color}<br>Orders: %{x:,}<br>Reorder rate: %{y:.2f}<br>Median add pos: %{customdata}<extra></extra>",
-          text = ~product_name, customdata = ~add_order_median) |>
-  layout(
-    title = "Product popularity vs. reorder tendency",
-    xaxis = list(title = "Orders per product (filtered ≥200)",
-                 type = "log", tickformat = ",d"),
-    yaxis = list(title = "Reorder rate (0–1)", range = c(0,1)),
-    legend = list(title = list(text = "Department")))
-```
 

@@ -10,6 +10,6 @@ output:
 
 My name is Selina, and I am a second-year MPH epi student at Mailman School of Public Health. I am taking P8105 Data Science I. Learn more about my journey [here](about.html)!
 
+# Instacart data
 
-
-
+Take a look at some plots for instacart data [here](instacart_plots.html)!

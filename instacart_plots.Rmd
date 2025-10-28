@@ -1,0 +1,84 @@
+---
+title: "Plotly"
+output:
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(plotly)
+library(scales)
+library(forcats)
+library(p8105.datasets)
+```
+
+
+```{r load}
+data("instacart")
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+top3 =
+  instacart |>
+  count(department, name = "dept_n") |>
+  slice_max(dept_n, n = 3) |>
+  pull(department)
+
+instacart |>
+filter(department %in% top3) |>
+count(department, aisle, name = "n") |>
+group_by(department) %>% slice_max(n, n = 5, with_ties = FALSE) |>
+ungroup() |>
+mutate(
+lab = stringr::str_wrap(as.character(aisle), 24),
+lab = forcats::fct_reorder(lab, n, .desc = TRUE)) |>
+plot_ly(x = ~n, y = ~lab, color = ~department,
+type = "bar", orientation = "h") %>%
+layout(title = "Top 3 Departments — Each Dept’s Top 5 Aisles",
+xaxis = list(title = "Number of items", tickformat = ",d"),
+yaxis = list(title = ""))
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+instacart |> 
+  group_by(product_name, department) |>
+  summarize(reorder_rate = mean(reordered), .groups="drop") |>
+  filter(!is.na(department)) |>
+  mutate(department = fct_reorder(department, reorder_rate, median)) |>
+  plot_ly(x= ~department, y= ~reorder_rate, type="box") |>
+  layout(yaxis=list(title="Product-level reorder rate"))
+```
+
+### Chart C
+
+```{r}
+instacart |>
+  group_by(product_name, department) %>%
+  summarize(
+    n_orders = n(), reorder_rate = mean(reordered), 
+    add_order_median = median(add_to_cart_order), .groups = "drop") |>
+  filter(n_orders >= 200) |>
+  plot_ly(x = ~n_orders, y = ~reorder_rate, color = ~department, 
+          size = ~n_orders, sizes = c(6, 24), type = "scatter", mode = "markers",
+          hovertemplate = "<b>%{text}</b><br>Dept: %{marker.color}<br>Orders: %{x:,}<br>Reorder rate: %{y:.2f}<br>Median add pos: %{customdata}<extra></extra>",
+          text = ~product_name, customdata = ~add_order_median) |>
+  layout(
+    title = "Product popularity vs. reorder tendency",
+    xaxis = list(title = "Orders per product (filtered ≥200)",
+                 type = "log", tickformat = ",d"),
+    yaxis = list(title = "Reorder rate (0–1)", range = c(0,1)),
+    legend = list(title = list(text = "Department")))
+```
+

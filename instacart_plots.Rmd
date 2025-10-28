@@ -28,13 +28,14 @@ Column {data-width=650}
 instacart |>
   group_by(product_name, department) %>%
   summarize(
-    n_orders = n(), reorder_rate = mean(reordered), 
-    add_order_median = median(add_to_cart_order), .groups = "drop") |>
+    n_orders = n(), reorder_rate = mean(reordered)) |>
   filter(n_orders >= 200) |>
-  plot_ly(x = ~n_orders, y = ~reorder_rate, color = ~department, 
-          size = ~n_orders, sizes = c(6, 24), type = "scatter", mode = "markers",
-          hovertemplate = "<b>%{text}</b><br>Dept: %{marker.color}<br>Orders: %{x:,}<br>Reorder rate: %{y:.2f}<br>Median add pos: %{customdata}<extra></extra>",
-          text = ~product_name, customdata = ~add_order_median) |>
+  mutate(text_label = str_c(product_name, "\nDept: ", department, 
+                            "\nOrders: ", comma(n_orders), 
+                            "\nReorder rate: ", percent(reorder_rate, 0.1))) |>
+  plot_ly(x = ~n_orders, y = ~reorder_rate, color = ~department,
+          type = "scatter", mode = "markers", 
+          marker = list(size = 5, opacity = 0.8), text = ~text_label) |>
   layout(
     title = "Product popularity vs. reorder tendency",
     xaxis = list(title = "Orders per product (filtered ≥200)",
